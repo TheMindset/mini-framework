@@ -1,4 +1,7 @@
+import axios, { AxiosResponse } from 'axios'
+
 interface UserProps {
+  id?: number
   name?: string
   age?: number
 }
@@ -15,6 +18,8 @@ export class User {
    * Wich has eventually constraints on keys and values
    */
   events: { [key: string]: Callback[] } = {}
+
+  url: string = 'http://localhost:3000'
 
   constructor(private data: UserProps) {}
 
@@ -44,5 +49,23 @@ export class User {
     }
 
     handlers.forEach(callback => callback())
+  }
+
+  fetch(): void {
+    axios.get(this.url + `/users/${this.get('id')}`)
+    .then((response: AxiosResponse): void => {
+      console.log(response);
+      this.set(response.data)
+    })
+  }
+
+  save(): void {
+    const id = this.get('id')
+
+    if (id) {
+      axios.put(this.url + `/users/${id}`, this.data)
+    } else {
+      axios.post(this.url + '/users', this.data)
+    }
   }
 }
