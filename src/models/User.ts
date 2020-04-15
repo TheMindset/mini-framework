@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from 'axios'
 import { Eventing } from './Eventing'
 
-interface UserProps {
+export interface UserProps {
   id?: number
   name?: string
   age?: number
@@ -9,7 +8,6 @@ interface UserProps {
 
 export class User {
   public events: Eventing = new Eventing()
-  url: string = 'http://localhost:3000'
 
   constructor(private data: UserProps ) {}
 
@@ -23,23 +21,5 @@ export class User {
      * in 'this.data' and overwite the old data in 'this.data'
      */
     Object.assign(this.data, update)
-  }
-
-  fetch(): void {
-    axios.get(this.url + `/users/${this.get('id')}`)
-    .then((response: AxiosResponse): void => {
-      console.log(response);
-      this.set(response.data)
-    })
-  }
-
-  save(): void {
-    const id = this.get('id')
-
-    if (id) {
-      axios.put(this.url + `/users/${id}`, this.data)
-    } else {
-      axios.post(this.url + '/users', this.data)
-    }
   }
 }
