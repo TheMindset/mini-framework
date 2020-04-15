@@ -1,18 +1,22 @@
 import axios, { AxiosPromise } from 'axios'
 import { UserProps } from './User'
 
+interface HasId {
+  id?: number
+}
+
 /**
- * 2) Refactor the class in order to be used with User class.
- * Cons: Strong dependencies with User class
+ * 3) Refactor using Generic
+ * Pros: Now the class is re-usable
  */
-export class Sync {
+export class Sync<T extends HasId> {
   constructor(public rootUrl: string) {}
 
   fetch(id: number): AxiosPromise {
     return axios.get(`${this.rootUrl}/${id}`)
   }
 
-  save(data: UserProps): AxiosPromise {
+  save(data: T): AxiosPromise {
     const { id } = data
 
     if (id) {
@@ -22,6 +26,29 @@ export class Sync {
     }
   }
 }
+
+
+/**
+ * 2) Refactor the class in order to be used with User class.
+ * Cons: Strong dependencies with User class
+ */
+// export class Sync {
+//   constructor(public rootUrl: string) {}
+
+//   fetch(id: number): AxiosPromise {
+//     return axios.get(`${this.rootUrl}/${id}`)
+//   }
+
+//   save(data: UserProps): AxiosPromise {
+//     const { id } = data
+
+//     if (id) {
+//       return axios.put(`${this.rootUrl}/${id}`, data)
+//     } else {
+//       return axios.post(this.rootUrl, data)
+//     }
+//   }
+// }
 
 /**
  * 1) Extract method related to the API
